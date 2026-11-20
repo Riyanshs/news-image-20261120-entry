@@ -3,7 +3,7 @@
 
 Copies the bundled entry.png into the grading output directory after
 checking it is a genuine PNG or JPEG inside the competition limits
-(at most 1 MiB, at most 1024x1024). Pure standard library, no network,
+(at most 1 MiB, exactly 1024x1024). Pure standard library, no network,
 fully deterministic: two runs write identical bytes.
 """
 
@@ -68,8 +68,8 @@ def main():
     size = png_dimensions(blob) or jpeg_dimensions(blob)
     if size is None:
         die("entry.png is neither a PNG nor a JPEG")
-    if size[0] > LIMIT_SIDE or size[1] > LIMIT_SIDE:
-        die("entry.png is %dx%d, over the 1024x1024 limit" % size)
+    if size != (LIMIT_SIDE, LIMIT_SIDE):
+        die("entry.png is %dx%d, must be exactly 1024x1024" % size)
 
     os.makedirs(DEST_DIR, exist_ok=True)
     shutil.copyfile(SRC, DEST)
